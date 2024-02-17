@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsProphet</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="hero">
+            <div class="overlay"></div> <!-- Add overlay here -->
+            <div class="hero-content">
+                <h1>Welcome to NewsProphet</h1>
+                <div class="hero-description">
+                    <p>Estimate the popularity of your articles with NewsProphet's cutting-edge prediction technology.</p>
+                </div>
+            </div>
+        </div>
+    </header>              
+    <main>
+        <section id="homepage">
+            <div id="options">
+                <button onclick="showLinkForm()">Insert Link</button>
+                <button onclick="showTextForm()">Copy/Paste Text</button>
+            </div>
+            <form id="linkForm" style="display: none;">
+                <label for="link">Insert link:</label><br>
+                <input type="text" id="link" placeholder="Enter URL"><br>
+                <br>
+                <label for="numHyperlinks">Number of Hyperlinks:</label><br>
+                <input type="number" id="numHyperlinks" min="0" placeholder="Enter number of hyperlinks"><br>
+                <br>
+                <label for="numImages">Number of Images:</label><br>
+                <input type="number" id="numImages" min="0" placeholder="Enter number of images"><br>
+                <br>
+                <button type="button" onclick="calculateViewsFromLink()">Calculate</button>
+            </form>
+                                                
+            <div id="textForm" style="display: none;">
+                <label for="heading">Heading:</label>
+                <input type="text" id="heading" placeholder="Enter heading">
+                <label for="body">Body:</label>
+                <textarea id="body" rows="4" placeholder="Enter body"></textarea>
+                <label for="images">Number of Images:</label>
+                <input type="number" id="images" min="0">
+                <label for="videos">Number of Videos:</label>
+                <input type="number" id="videos" min="0">
+                <button type="button" onclick="calculateViewsFromText()">Calculate</button>
+            </div>
+        </section>
+        <section id="result" style="display: none;">
+            <h2>Estimated Views:</h2>
+            <p id="views"></p>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>

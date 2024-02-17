@@ -9,7 +9,7 @@ cors = CORS(app)
 @app.route('/scrape', methods=["GET", "POST"])
 def scrape():
     url = request.args.get('url')
-    print(url)
+    print("URL RECIEVED:" + url)
 
     return scrape_article(url)
 
@@ -19,7 +19,7 @@ def news_score():
     print(request)
     # get_features
     # input to model
-    # maybe process
+    #maybe process
     # return some score
     return 'news_score'
 
