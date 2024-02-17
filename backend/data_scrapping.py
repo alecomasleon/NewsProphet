@@ -38,6 +38,8 @@ def scrape_article(url):
 
     return article_data
 
-url = 'https://www.wired.com/2014/03/everythingyoudidntknowyouwantedtoknow-about-the-science-of-cheese/'
-article_info = scrape_article(url)
-print(json.dumps(article_info, indent=4))
+
+if __name__ == '__main__':
+    url = 'https://www.wired.com/2014/03/everythingyoudidntknowyouwantedtoknow-about-the-science-of-cheese/'
+    article_info = scrape_article(url)
+    print(json.dumps(article_info, indent=4))
