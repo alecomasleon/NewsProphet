@@ -14,6 +14,8 @@ def scrape_article(url):
 
     images = len(soup.find_all('img'))
 
+    videos = len(soup.find_all('video'))  # Get the number of videos
+
     num_paragraphs = len(soup.find_all('p'))
 
     references = []
@@ -30,6 +32,7 @@ def scrape_article(url):
         'header': header,
         'body': body,
         'num_images': images,
+        'num_videos': videos, 
         'num_paragraphs': num_paragraphs,
         'references': references,
         'num_hyperlinks': num_hyperlinks,
