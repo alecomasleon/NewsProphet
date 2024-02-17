@@ -1,14 +1,7 @@
-from ucimlrepo import fetch_ucirepo
+import string
 
-# fetch dataset
-online_news_popularity = fetch_ucirepo(id=332)
-
-# data (as pandas dataframes)
-X = online_news_popularity.data.features
-y = online_news_popularity.data.targets
-
-# metadata
-print(online_news_popularity.metadata)
-
-# variable information
-print(online_news_popularity.variables)
+body = "HEEEllo's my. nice TO meet's you!??"
+body = body.lower()
+body = body.replace("'s", '')
+body = body.translate(str.maketrans("", "", string.punctuation))
+print(body)
