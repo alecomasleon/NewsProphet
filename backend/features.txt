@@ -9,7 +9,7 @@
 10. num_videos:                    Number of videos
 11. average_token_length:          Average length of the words in the content
 
-19. kw_min_min:                    Worst keyword (min. shares)
+19. kw_min_min:                    Worst keyword (min. shares)      SHOULD WE USE??
 20. kw_max_min:                    Worst keyword (max. shares)
 21. kw_avg_min:                    Worst keyword (avg. shares)
 22. kw_min_max:                    Best keyword (min. shares)
@@ -48,7 +48,6 @@
 55. max_negative_polarity:         Max. polarity of negative  words
 56. title_subjectivity:            Title subjectivity
 57. title_sentiment_polarity:      Title polarity
-58. abs_title_subjectivity:        Absolute subjectivity level
 59. abs_title_sentiment_polarity:  Absolute polarity level
 
 60. shares:                        Number of shares (target)

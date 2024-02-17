@@ -5,9 +5,125 @@ from nltk.corpus import stopwords
 from data_scraping import scrape_article
 from datetime import datetime
 import pandas as pd
+from textblob import TextBlob
+from textblob.sentiments import PatternAnalyzer
+from flair.models import TextClassifier
+from flair.data import Sentence
 
 
 nltk.download('stopwords')
+
+word_polarities = {}
+classifier = TextClassifier.load('en-sentiment')
+
+def get_flair_polarity(text):
+    s = Sentence(text)
+    classifier.predict(s)
+    total_sentiment = s.labels[0]
+    assert total_sentiment.value in ['POSITIVE', 'NEGATIVE']
+    sign = 1 if total_sentiment.value == 'POSITIVE' else -1
+    score = total_sentiment.score
+
+    return sign * score
+
+
+def get_polarity_and_sentiment(article_data):
+    body = article_data['body']
+    body_sentiment = TextBlob(body, analyzer=PatternAnalyzer()).sentiment
+
+    global_subjectivity = body_sentiment.subjectivity
+    global_sentiment_polarity = get_flair_polarity(body)
+    # global_sentiment_polarity = body_sentiment.polarity
+
+    body = body.lower()
+    body = body.replace("'s", '')
+    body = body.translate(str.maketrans("", "", string.punctuation))
+    words = body.split(' ')
+    words = [word for word in words if word not in stopwords.words('english')]
+
+    neutral_threshold = 0.05
+    num_pos_words = 0
+    num_neg_words = 0
+    num_non_neutral = 0
+    sum_pos_polarity = 0
+    max_positive_polarity = -1
+    sum_neg_polarity = 0
+    min_negative_polarity = 1
+
+    for word in words:
+        # print(word)
+        if word in word_polarities:
+            polarity = word_polarities[word]
+        else:
+            # polarity = TextBlob(body, analyzer=PatternAnalyzer()).sentiment.polarity
+            polarity = get_flair_polarity(word)
+            word_polarities[word] = polarity
+        
+        if polarity > neutral_threshold:
+            num_pos_words += 1
+            num_non_neutral += 1
+            sum_pos_polarity += polarity
+            if polarity > max_positive_polarity:
+                max_positive_polarity = polarity
+        elif polarity < neutral_threshold:
+            num_neg_words += 1
+            num_non_neutral += 1
+            sum_neg_polarity += polarity
+            if polarity < min_negative_polarity:
+                min_negative_polarity = polarity
+
+    
+    if len(words) == 0:
+        global_rate_positive_words = 0
+        global_rate_negative_words = 0
+    else:
+        global_rate_positive_words = num_pos_words / len(words)
+        global_rate_negative_words = num_neg_words / len(words)
+
+    if num_non_neutral == 0:
+        rate_positive_words = 0
+        rate_negative_words = 0
+    else:
+        rate_positive_words = num_pos_words / num_non_neutral
+        rate_negative_words = num_neg_words / num_non_neutral
+
+    if num_pos_words == 0:
+        avg_positive_polarity = 0
+    else:
+        avg_positive_polarity = sum_pos_polarity / num_pos_words
+    
+    if num_neg_words == 0:
+        avg_negative_polarity = 0
+    else:
+        avg_negative_polarity = sum_neg_polarity / num_neg_words
+
+    title = article_data['header']
+    print(title)
+    title_sentiment = TextBlob(title, analyzer=PatternAnalyzer()).sentiment
+
+    title_subjectivity = title_sentiment.subjectivity
+    # title_sentiment_polarity = title_sentiment.polarity
+    title_sentiment_polarity = get_flair_polarity(title)
+    abs_title_sentiment_polarity = abs(title_sentiment.polarity)
+
+    polarity_and_sentiments = {
+        'global_subjectivity': global_subjectivity,
+        'global_sentiment_polarity': global_sentiment_polarity,
+        'global_rate_positive_words': global_rate_positive_words,
+        'global_rate_negative_words': global_rate_negative_words,
+        'rate_positive_words': rate_positive_words,
+        'rate_negative_words': rate_negative_words,
+        'avg_positive_polarity': avg_positive_polarity,
+        'max_positive_polarity': max_positive_polarity,
+        'avg_negative_polarity': avg_negative_polarity,
+        'min_negative_polarity': min_negative_polarity,
+        'title_subjectivity': title_subjectivity,
+        'title_sentiment_polarity': title_sentiment_polarity,
+        'abs_title_sentiment_polarity': abs_title_sentiment_polarity
+    }
+
+    return polarity_and_sentiments
+
 
 def get_token_features(article_data):
     body = article_data['body']
@@ -77,13 +193,19 @@ def get_features_from_article_data(article_data):
     features['is_weekend'] = 1 if weekday == 5 or weekday == 6 else 0
 
     # LDA
-    # subjectivity, sentiment
+
+    print('HERE')
+    polarity_and_sentiments = get_polarity_and_sentiment(article_data)
+    for i in polarity_and_sentiments.keys():
+        features[i] = polarity_and_sentiments[i]
+    print('FINISHED')
 
     X = pd.DataFrame(features, index=[0])
 
     print(X.head())
+    print(features)
 
     return X
 
 if __name__=='__main__':
-    get_features_from_article_data(scrape_article(make_valid_mashable_url('http://mashable.com/2013/01/17/80s-video-dating/')))
+    get_features_from_article_data(scrape_article(make_valid_mashable_url('http://mashable.com/2013/01/14/twitter-mexico-violence/')))
