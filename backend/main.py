@@ -14,14 +14,14 @@ def scrape():
     return scrape_article(url)
 
 
-@app.route('/news_score', methods=["GET", "POST"])
+@app.route('/calculate', methods=["GET", "POST"])
 def news_score():
     print(request)
     # get_features
     # input to model
     #maybe process
     # return some score
-    return 'news_score'
+    return 'HIII REANNA'
 
 
 if __name__ == '__main__':

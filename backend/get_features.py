@@ -17,6 +17,9 @@ word_polarities = {}
 classifier = TextClassifier.load('en-sentiment')
 
 def get_flair_polarity(text):
+    if text == '':
+        return 0
+
     s = Sentence(text)
     classifier.predict(s)
     total_sentiment = s.labels[0]
@@ -27,13 +30,15 @@ def get_flair_polarity(text):
     return sign * score
 
 
-def get_polarity_and_sentiment(article_data):
+def get_polarity_and_sentiment(article_data, verbose=False, flair=True):
     body = article_data['body']
     body_sentiment = TextBlob(body, analyzer=PatternAnalyzer()).sentiment
 
     global_subjectivity = body_sentiment.subjectivity
-    global_sentiment_polarity = get_flair_polarity(body)
-    # global_sentiment_polarity = body_sentiment.polarity
+    if flair:
+        global_sentiment_polarity = get_flair_polarity(body)
+    else:
+        global_sentiment_polarity = body_sentiment.polarity
 
     body = body.lower()
     body = body.replace("'s", '')
@@ -55,8 +60,10 @@ def get_polarity_and_sentiment(article_data):
         if word in word_polarities:
             polarity = word_polarities[word]
         else:
-            # polarity = TextBlob(body, analyzer=PatternAnalyzer()).sentiment.polarity
-            polarity = get_flair_polarity(word)
+            if flair:
+                polarity = get_flair_polarity(word)
+            else:
+                polarity = TextBlob(body, analyzer=PatternAnalyzer()).sentiment.polarity
             word_polarities[word] = polarity
         
         if polarity > neutral_threshold:
@@ -98,12 +105,16 @@ def get_polarity_and_sentiment(article_data):
         avg_negative_polarity = sum_neg_polarity / num_neg_words
 
     title = article_data['header']
-    print(title)
+    if verbose:
+        print(title)
     title_sentiment = TextBlob(title, analyzer=PatternAnalyzer()).sentiment
 
     title_subjectivity = title_sentiment.subjectivity
-    # title_sentiment_polarity = title_sentiment.polarity
-    title_sentiment_polarity = get_flair_polarity(title)
+    if flair:
+        title_sentiment_polarity = get_flair_polarity(title)
+    else:
+        title_sentiment_polarity = title_sentiment.polarity
+
     abs_title_sentiment_polarity = abs(title_sentiment.polarity)
 
     polarity_and_sentiments = {
@@ -125,7 +136,7 @@ def get_polarity_and_sentiment(article_data):
     return polarity_and_sentiments
 
 
-def get_token_features(article_data):
+def get_token_features(article_data, verbose=False):
     body = article_data['body']
     body = body.lower()
     body = body.replace("'s", '')
@@ -161,7 +172,7 @@ def get_token_features(article_data):
     return token_features
 
 
-def get_features_from_article_data(article_data):
+def get_features_from_article_data(article_data, verbose=False, do_flair=True):
     features = {}
     features['n_tokens_title'] = len(article_data['header'].split(' '))
     features['n_tokens_content'] = len(article_data['body'].split(' '))
@@ -194,16 +205,15 @@ def get_features_from_article_data(article_data):
 
     # LDA
 
-    print('HERE')
-    polarity_and_sentiments = get_polarity_and_sentiment(article_data)
+    polarity_and_sentiments = get_polarity_and_sentiment(article_data, flair=do_flair)
     for i in polarity_and_sentiments.keys():
         features[i] = polarity_and_sentiments[i]
-    print('FINISHED')
 
     X = pd.DataFrame(features, index=[0])
 
-    print(X.head())
-    print(features)
+    if verbose:
+        print(X.head())
+        print(features)
 
     return X
 
