@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from gensim import corpora
+from gensim import corpora, models
 import nltk
 from nltk.corpus import stopwords
 import json
@@ -74,3 +74,21 @@ if __name__ == '__main__':
     del article_info['dictionary']
 
     print(json.dumps(article_info, indent=4))
+
+    # Load the Trained LDA Model
+    lda_model_path = 'path_to_saved_model'  # Replace 'path_to_saved_model' with the actual path where you saved your trained LDA model file
+    lda_model = models.LdaModel.load(lda_model_path)
+
+    # Get the preprocessed text from the article_info dictionary
+    preprocessed_text = article_info['preprocessed_text']
+
+    # Infer topics for the preprocessed text using the trained LDA model
+    bow_vector = article_info['corpus'][0]
+    topic_distribution = lda_model[bow_vector]
+
+    # Print the topic distribution
+    print("Topic Distribution:")
+    for topic_id, topic_prob in topic_distribution:
+        print(f"Topic {topic_id}: {topic_prob}")
+
+    # Interpretation: You can interpret the topic distribution to understand which topics are most relevant to the article's body.
