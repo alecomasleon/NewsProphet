@@ -72,7 +72,7 @@ def get_polarity_and_sentiment(article_data, verbose=False, flair=True):
             sum_pos_polarity += polarity
             if polarity > max_positive_polarity:
                 max_positive_polarity = polarity
-        elif polarity < neutral_threshold:
+        elif polarity < -neutral_threshold:
             num_neg_words += 1
             num_non_neutral += 1
             sum_neg_polarity += polarity

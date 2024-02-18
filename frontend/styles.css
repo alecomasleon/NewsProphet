@@ -9,37 +9,46 @@ body {
 header {
     background-color: transparent;
     color: #fff;
-    padding: 40px 20px;
+    padding: 40px 40px;
     text-align: center;
 }
 
 .hero {
     position: relative;
-    background-image: url('https://www.unlv.edu/sites/default/files/styles/1200_width/public/articles/main-images/Goldfield-Newspaper1_0.jpg?itok=5L5QT6f_'); /* Replace 'background.jpg' with your image path */
+    background-image: url('https://www.newsnationnow.com/wp-content/uploads/sites/108/2023/08/64c965f438c996.16365641.jpeg?w=2560&h=1440&crop=1');
     background-size: cover;
     background-position: center;
     padding: 100px 20px;
     text-align: center;
 }
 
-.hero-overlay {
+.overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    z-index: -1; /* Ensure the overlay is behind other content */
 }
 
+
+
+
 .hero h1 {
-    font-size: 64px; /* Increased font size */
+    font-size: 75px; /* Increased font size */
     font-weight: bold; /* Added font weight for more emphasis */
     text-shadow: 0 0 20px rgba(0, 0, 0, 0.9); /* Increased shadow effect for more contrast */
+    padding: 20px 90px; /* Add padding to the title */
+    display: inline-block; /* Ensures the black box wraps around the title */
+    border-radius: 10px; /* Rounded corners */
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
 }
 
 .hero-description {
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
-    padding: 20px;
+    font-size: 25px;
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+    padding: 30px;
     border-radius: 10px; /* Rounded corners */
     display: inline-block; /* Ensures the background only wraps around the text */
 }
@@ -48,9 +57,6 @@ header {
     margin: 0;
 }
 
-p {
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.7); /* Shadow effect */
-}
 
 main {
     padding: 20px;
@@ -70,7 +76,7 @@ input, textarea {
     width: 100%;
     padding: 12px;
     margin-bottom: 16px;
-    border: 1px solid #A9927D; /* Light brown */
+    border: 1px solid #527B8E; /* Light brown */
     border-radius: 0; /* Set border radius to 0 for square edges */
     font-size: 16px;
     box-sizing: border-box;
@@ -80,7 +86,7 @@ input, textarea {
 
 button {
     padding: 12px 24px;
-    background-color: #5E503F; /* Dark brown */
+    background-color: #22333B; /* Dark brown */
     color: white;
     border: none;
     border-radius: 0; /* Set border radius to 0 for square edges */
@@ -90,7 +96,7 @@ button {
 }
 
 button:hover {
-    background-color: #A9927D; /* Light brown on hover */
+    background-color: #527B8E; /* Light brown on hover */
 }
 
 #options {
@@ -113,4 +119,5 @@ button:hover {
 
 #views {
     font-size: 20px;
+    color: #000; /* Set text color to black */
 }
