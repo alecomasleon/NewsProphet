@@ -9,16 +9,6 @@
 10. num_videos:                    Number of videos
 11. average_token_length:          Average length of the words in the content
 
-19. kw_min_min:                    Worst keyword (min. shares)      SHOULD WE USE??
-20. kw_max_min:                    Worst keyword (max. shares)
-21. kw_avg_min:                    Worst keyword (avg. shares)
-22. kw_min_max:                    Best keyword (min. shares)
-23. kw_max_max:                    Best keyword (max. shares)
-24. kw_avg_max:                    Best keyword (avg. shares)
-25. kw_min_avg:                    Avg. keyword (min. shares)
-26. kw_max_avg:                    Avg. keyword (max. shares)
-27. kw_avg_avg:                    Avg. keyword (avg. shares)
-
 31. weekday_is_monday:             Was the article published on a Monday?
 32. weekday_is_tuesday:            Was the article published on a Tuesday?
 33. weekday_is_wednesday:          Was the article published on a Wednesday?
