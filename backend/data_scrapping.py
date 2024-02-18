@@ -1,48 +1,50 @@
 import requests
 from bs4 import BeautifulSoup
-import json
+from gensim import corpora
+import nltk
+from nltk.corpus import stopwords
 
-def scrape_article(url):
+# Download stopwords if not already downloaded
+nltk.download('stopwords')
+
+# Get English stopwords list
+stop_words = set(stopwords.words('english'))
+
+# Function to preprocess text data
+def preprocess_text(text):
+    # Tokenize the text (split into words)
+    tokens = text.split()  # You may need a more sophisticated tokenizer depending on your requirements
+    
+    # Remove stopwords
+    tokens = [token for token in tokens if token.lower() not in stop_words]
+    
+    # Optionally, you may perform additional text cleaning here
+    
+    return tokens
+
+# Function to scrape article, preprocess data, and create bag-of-words representation
+def scrape_and_preprocess_article(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
 
-    header = soup.find('h1').text.strip()
-
-    body = ""
+    # Extract text from the article body
+    body_text = ""
     for paragraph in soup.find_all('p'):
-        body += paragraph.text.strip() + "\n"
+        body_text += paragraph.text.strip() + " "
 
-    images = len(soup.find_all('img'))
-
-    videos = len(soup.find_all('video'))  # Get the number of videos
-
-    num_paragraphs = len(soup.find_all('p'))
-
-    references = []
-    for reference in soup.find_all('a', href=True):
-        references.append(reference['href'])
-
-    num_hyperlinks = len(references)
-
-    published_date = None
-    if soup.find('meta', property='article:published_time'):
-        published_date = soup.find('meta', property='article:published_time')['content']
-
-    article_data = {
-        'header': header,
-        'body': body,
-        'num_images': images,
-        'num_videos': videos, 
-        'num_paragraphs': num_paragraphs,
-        'references': references,
-        'num_hyperlinks': num_hyperlinks,
-        'published_date': published_date
-    }
-
-    return article_data
-
+    # Preprocess the text data
+    preprocessed_text = preprocess_text(body_text)
+    
+    # Create a dictionary from the preprocessed data
+    dictionary = corpora.Dictionary([preprocessed_text])
+    
+    # Create a bag-of-words representation of the article
+    corpus = [dictionary.doc2bow(preprocessed_text)]
+    
+    return dictionary, corpus
 
 if __name__ == '__main__':
     url = 'https://www.wired.com/2014/03/everythingyoudidntknowyouwantedtoknow-about-the-science-of-cheese/'
-    article_info = scrape_article(url)
-    print(json.dumps(article_info, indent=4))
+    dictionary, corpus = scrape_and_preprocess_article(url)
+    print(dictionary)  # Print the dictionary
+    print(corpus)  # Print the bag-of-words representation
